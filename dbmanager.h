@@ -1,33 +1,31 @@
 #ifndef DBMANAGER_H
 #define DBMANAGER_H
 
-#include <QObject>
 #include <QtSql>
 
-class DbManager : public QObject
+class DbManager
 {
-    Q_OBJECT
 
     public:
-
-        DbManager( const QString & path, QObject * parent = nullptr );
+        explicit DbManager( const QString & path );
         ~DbManager();
 
         void inserIntoTable( const QVariantList & data );
         QByteArray getImageLatestRecord();
-        void getAllData();
+        int getSize();
+        float getMatch( int row );
+        QString getHash( int row );
+        QByteArray getImageData( int row );
+        QString getDateTime( int row );
+        void getAllData(); //test method
 
     private:
-
         QSqlDatabase m_mainDb;
         bool openDb();
         bool createDb();
         bool createTable();
 
         QString m_dbPath;
-
-
-    signals:
 
 };
 

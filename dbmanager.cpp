@@ -13,8 +13,8 @@
 #define TAB_DATE  "DateTime" // 5 col - Date and time
 
 
-DbManager::DbManager( const QString & path, QObject * parent)
-    : QObject( parent ), m_dbPath( path )
+DbManager::DbManager( const QString & path )
+    : m_dbPath( path )
 {
     {
         bool success = false;
@@ -147,6 +147,127 @@ QByteArray DbManager::getImageLatestRecord()
     {
         QSqlRecord record = query.record();
         out = record.value( 0 ).toByteArray();
+    }
+
+    return out;
+}
+
+int DbManager::getSize()
+{
+    //SELECT COUNT(column_name) FROM table_name;
+    QSqlQuery query;
+//    QString queryString = "SELECT COUNT( " TAB_ID " ) FROM " TAB_NAME;
+    QString queryString = "SELECT COUNT(*) FROM " TAB_NAME;
+    query.exec("SELECT COUNT(*) FROM SOME_TABLE");
+
+    if( !query.exec( queryString ) )
+    {
+        qDebug() << "Error getting rows count from " << TAB_NAME;
+        qDebug() << query.lastError().text();
+    }
+
+//    query.exec("SELECT COUNT(*) FROM SOME_TABLE");
+    int rowCount = 0;
+    if( query.first() )
+    {
+        rowCount = query.value( 0 ).toInt();
+    }
+
+    return rowCount;
+}
+
+float DbManager::getMatch( int row )
+{
+    QSqlQuery query;
+    QString queryString = QString( "SELECT " TAB_MATCH " FROM " TAB_NAME " WHERE " TAB_ID ""
+                              " = (%1)" ).arg( row );
+
+    if( !query.exec( queryString ) )
+    {
+        qDebug() << "Error getting match with id " << row << "from " << TAB_NAME;
+        qDebug() << query.lastError().text();
+    }
+
+    float out = 0;
+//    while( query.next() )
+//    {
+//        QSqlRecord record = query.record();
+//        out = record.value( 0 ).toFloat();
+//    }
+
+    if( query.first() )
+    {
+        QSqlRecord record = query.record();
+        out = record.value( 0 ).toFloat();
+    }
+
+    return out;
+}
+
+QString DbManager::getHash(int row)
+{
+    QSqlQuery query;
+    QString queryString = QString( "SELECT " TAB_HASH " FROM " TAB_NAME " WHERE " TAB_ID ""
+                              " = (%1)" ).arg( row );
+
+    if( !query.exec( queryString ) )
+    {
+        qDebug() << "Error getting hash with id " << row << "from " << TAB_NAME;
+        qDebug() << query.lastError().text();
+    }
+
+    QString out = "";
+
+    if( query.first() )
+    {
+        QSqlRecord record = query.record();
+        out = record.value( 0 ).toString();
+    }
+
+    return out;
+}
+
+QByteArray DbManager::getImageData(int row)
+{
+    QSqlQuery query;
+    QString queryString = QString( "SELECT " TAB_IMAGE " FROM " TAB_NAME " WHERE " TAB_ID ""
+                              " = (%1)" ).arg( row );
+
+    if( !query.exec( queryString ) )
+    {
+        qDebug() << "Error getting image data with id " << row << "from " << TAB_NAME;
+        qDebug() << query.lastError().text();
+    }
+
+    QByteArray out = "";
+
+    if( query.first() )
+    {
+        QSqlRecord record = query.record();
+        out = record.value( 0 ).toByteArray();
+    }
+
+    return out;
+}
+
+QString DbManager::getDateTime(int row)
+{
+    QSqlQuery query;
+    QString queryString = QString( "SELECT " TAB_DATE " FROM " TAB_NAME " WHERE " TAB_ID ""
+                              " = (%1)" ).arg( row );
+
+    if( !query.exec( queryString ) )
+    {
+        qDebug() << "Error getting date and time with id " << row << "from " << TAB_NAME;
+        qDebug() << query.lastError().text();
+    }
+
+    QString out = "";
+
+    if( query.first() )
+    {
+        QSqlRecord record = query.record();
+        out = record.value( 0 ).toString();
     }
 
     return out;
