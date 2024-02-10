@@ -8,6 +8,9 @@
 #include "dbmanager.h"
 #include "qmlimageprovider.h"
 
+/**
+ * @brief The DataSource class is making all image actions and operated with the DataBase
+ */
 class DataSource : public QObject
 {
     Q_OBJECT
@@ -26,8 +29,6 @@ class DataSource : public QObject
     signals:
         void preItemAdded();
         void postItemAdded();
-        void preItemRemoved(int index);
-        void postItemRemoved();
 
     private slots:
         void getImageOnTimer();
@@ -42,7 +43,7 @@ class DataSource : public QObject
         QScopedPointer< DbManager > m_dbManager;
         QScopedPointer< QTimer > m_timer;
         QmlImageProvider * m_imageProvider;
-        uint32_t m_timerFreq = 10 * 1000; //60 sec in ms
+        uint32_t m_timerFreq = 60 * 1000; //60 sec in ms
         const QGuiApplication & m_app;
         QPixmap m_prevPixmap;
         QPixmap m_newPixmap;

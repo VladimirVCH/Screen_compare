@@ -4,6 +4,10 @@
 #include <QObject>
 #include "datamodel.h"
 
+/**
+ * @brief AppWrapper is the main class to start application
+ * and link all data with GUI
+ */
 class AppWrapper : public QObject
 {
     Q_OBJECT

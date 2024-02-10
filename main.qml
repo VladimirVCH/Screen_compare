@@ -18,11 +18,13 @@ Window
 
         ListView
         {
-            id : mListView
-            model : scrShotModel
+            id: mListView
+            model: scrShotModel
+            rotation: 180
             delegate: Rectangle
             {
                 width : mainWin.width
+                rotation: 180
                 height: 100
                 color: "beige"
                 border.color: "yellowgreen"
@@ -98,6 +100,7 @@ Window
             Layout.fillWidth: true
             onClicked:
             {
+                mListView.positionViewAtEnd();
                 scrShotDataSource.startTimer()
             }
 

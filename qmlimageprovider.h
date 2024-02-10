@@ -2,7 +2,9 @@
 #define QMLIMAGEPROVIDER_H
 #include <QQuickImageProvider>
 
-
+/**
+ * @brief The QmlImageProvider class is used to shop images in QML
+ */
 class QmlImageProvider : public QQuickImageProvider
 {
     public:

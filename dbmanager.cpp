@@ -1,9 +1,5 @@
 #include "dbmanager.h"
 
-#include <QImageReader> // remove later
-#include <QImage> // remove later
-#include <QPixmap> // remove later
-
 #define DB_TYPE   "QSQLITE"
 #define TAB_NAME  "Records"  // Table name
 #define TAB_ID    "Id"       // 1 col - Table id
@@ -97,39 +93,6 @@ void DbManager::inserIntoTable( const QVariantList & data )
     }
 }
 
-void DbManager::getAllData() // test version - remove later
-{
-    QSqlQuery query;
-    QString queryString = "SELECT " TAB_ID "," TAB_MATCH "," TAB_HASH "," TAB_IMAGE "," TAB_DATE " FROM " TAB_NAME;
-
-    if( !query.exec( queryString ) )
-    {
-        qDebug() << "error get all from " << TAB_NAME;
-        qDebug() << query.lastError().text();
-    }
-
-    while( query.next() )
-    {
-        QSqlRecord record = query.record();
-        qDebug() << "Id : " << record.value( 0 ).toFloat();
-        qDebug() << "Match : " << record.value( 1 ).toFloat();
-        qDebug() << "Hash : " << record.value( 2 ).toString();
-
-        static uint num = 3;
-        ++num;
-        auto data = record.value( 3 ).toByteArray();
-
-        QPixmap outPixmap = QPixmap();
-        outPixmap.loadFromData( data );
-        qDebug() << outPixmap.isNull();
-        outPixmap.save( QString( "/tmp/outFromDb%1.png" ).arg( num ), "png" );
-
-        qDebug() << "DateTime : " << record.value( 4 ).toString();
-
-        qDebug() << "";
-    }
-}
-
 QByteArray DbManager::getImageLatestRecord()
 {
     QSqlQuery query;
@@ -154,9 +117,7 @@ QByteArray DbManager::getImageLatestRecord()
 
 int DbManager::getSize()
 {
-    //SELECT COUNT(column_name) FROM table_name;
     QSqlQuery query;
-//    QString queryString = "SELECT COUNT( " TAB_ID " ) FROM " TAB_NAME;
     QString queryString = "SELECT COUNT(*) FROM " TAB_NAME;
     query.exec("SELECT COUNT(*) FROM SOME_TABLE");
 
@@ -166,7 +127,6 @@ int DbManager::getSize()
         qDebug() << query.lastError().text();
     }
 
-//    query.exec("SELECT COUNT(*) FROM SOME_TABLE");
     int rowCount = 0;
     if( query.first() )
     {
@@ -189,11 +149,6 @@ float DbManager::getMatch( int row )
     }
 
     float out = 0;
-//    while( query.next() )
-//    {
-//        QSqlRecord record = query.record();
-//        out = record.value( 0 ).toFloat();
-//    }
 
     if( query.first() )
     {
@@ -204,7 +159,7 @@ float DbManager::getMatch( int row )
     return out;
 }
 
-QString DbManager::getHash(int row)
+QString DbManager::getHash( int row )
 {
     QSqlQuery query;
     QString queryString = QString( "SELECT " TAB_HASH " FROM " TAB_NAME " WHERE " TAB_ID ""
@@ -227,7 +182,7 @@ QString DbManager::getHash(int row)
     return out;
 }
 
-QByteArray DbManager::getImageData(int row)
+QByteArray DbManager::getImageData( int row )
 {
     QSqlQuery query;
     QString queryString = QString( "SELECT " TAB_IMAGE " FROM " TAB_NAME " WHERE " TAB_ID ""
@@ -250,7 +205,7 @@ QByteArray DbManager::getImageData(int row)
     return out;
 }
 
-QString DbManager::getDateTime(int row)
+QString DbManager::getDateTime( int row )
 {
     QSqlQuery query;
     QString queryString = QString( "SELECT " TAB_DATE " FROM " TAB_NAME " WHERE " TAB_ID ""

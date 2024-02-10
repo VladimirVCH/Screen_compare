@@ -3,6 +3,9 @@
 
 #include <QtSql>
 
+/**
+ * @brief The DbManager class is used to operate DataBase
+ */
 class DbManager
 {
 

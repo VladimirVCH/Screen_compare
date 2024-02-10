@@ -5,6 +5,9 @@
 #include <QAbstractListModel>
 #include "datasource.h"
 
+/**
+ * @brief The DataModel class is used to ensure dynamic update of model for QML GUI
+ */
 class DataModel : public QAbstractListModel
 {
     Q_OBJECT

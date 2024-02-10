@@ -18,7 +18,6 @@ void DataSource::startTimer()
     connect( m_timer.get(), & QTimer::timeout, this, & DataSource::getImageOnTimer );
     m_timer->start( m_timerFreq ); //start timer - in msec
     qDebug() << "Timer started";
-//    m_dbManager->getAllData();
 }
 
 void DataSource::stopTimer()
