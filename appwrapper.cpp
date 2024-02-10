@@ -3,7 +3,6 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
-#include <QDebug>
 #include "appwrapper.h"
 
 AppWrapper::AppWrapper( const QGuiApplication & app, QObject * parent )

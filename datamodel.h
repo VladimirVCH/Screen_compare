@@ -1,7 +1,6 @@
 #ifndef DATAMODEL_H
 #define DATAMODEL_H
 
-#include <QObject>
 #include <QAbstractListModel>
 #include "datasource.h"
 

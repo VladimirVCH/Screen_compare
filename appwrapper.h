@@ -1,7 +1,7 @@
 #ifndef APPWRAPPER_H
 #define APPWRAPPER_H
+
 #include <QQmlApplicationEngine>
-#include <QObject>
 #include "datamodel.h"
 
 /**

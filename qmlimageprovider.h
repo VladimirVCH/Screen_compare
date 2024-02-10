@@ -1,5 +1,6 @@
 #ifndef QMLIMAGEPROVIDER_H
 #define QMLIMAGEPROVIDER_H
+
 #include <QQuickImageProvider>
 
 /**

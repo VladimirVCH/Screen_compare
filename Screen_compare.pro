@@ -12,6 +12,7 @@ SOURCES += \
         datamodel.cpp \
         datasource.cpp \
         dbmanager.cpp \
+        imageprocessing.cpp \
         main.cpp \
         qmlimageprovider.cpp
 
@@ -33,4 +34,5 @@ HEADERS += \
     datamodel.h \
     datasource.h \
     dbmanager.h \
+    imageprocessing.h \
     qmlimageprovider.h

@@ -10,6 +10,28 @@ DataSource::DataSource( const QGuiApplication & app, QObject * parent )
     m_dbManager.reset( new DbManager( QDir::tempPath() + "test.db" ) );
 
     m_newPixmap.loadFromData( m_dbManager->getImageLatestRecord() );
+
+    m_processingThread.reset( new QThread() );
+
+    m_imageProcessing.reset( new ImageProcessing() );
+
+    m_imageProcessing->moveToThread( m_processingThread.get() );
+
+    // update DB after image processing
+    connect( m_imageProcessing.get(), &ImageProcessing::processingReady, this, &DataSource::updateDb );
+    // start image processing after screenshot
+    connect( this, &DataSource::screenShotIsReady, m_imageProcessing.get(), &ImageProcessing::startProcessing );
+    // finish thread
+    connect( this, &DataSource::finished, m_processingThread.get(), [ = ]{
+        m_processingThread->quit();
+        m_processingThread->wait(); } );
+
+    m_processingThread->start();
+}
+
+DataSource::~DataSource()
+{
+    emit finished();
 }
 
 void DataSource::startTimer()
@@ -70,19 +92,18 @@ void DataSource::setImageProvider( QmlImageProvider * imageProvider )
 void DataSource::getImageOnTimer()
 {
     takeScreenShot();
+    emit screenShotIsReady( m_prevPixmap, m_newPixmap );
 
-    QVariantList list;
-    list.append( compare() ); // Match
-    auto byteArr = latestPixmapToByteArray();
-    list.append( getHash( byteArr ) ); // Hash
-    list.append( byteArr ); // Image data
-    list.append( getDateTime() ); // DateTime
+    qDebug() << "Screenshot captured";
+}
 
+void DataSource::updateDb( QVariantList list )
+{
     emit preItemAdded();
     m_dbManager->inserIntoTable( list );
     emit postItemAdded();
 
-    qDebug() << "Screenshot captured";
+    qDebug() << "Data Base updated";
 }
 
 void DataSource::takeScreenShot()
@@ -91,50 +112,4 @@ void DataSource::takeScreenShot()
     QScreen * screen = m_app.primaryScreen();
     m_newPixmap = screen->grabWindow( 0 );
 
-}
-
-float DataSource::compare()
-{
-    auto latestImage = m_newPixmap.toImage();
-    auto prevImage = m_prevPixmap.toImage();
-
-    if( ( latestImage.width() != prevImage.width() ) || ( latestImage.height() != prevImage.height() ) )
-    {
-        return 0;
-    }
-
-    quint32 matchPix = 0;
-    quint32 totalPix = latestImage.width() * latestImage.height();
-    for( auto i = 0; i < latestImage.width() ; ++i )
-    {
-        for( auto j = 0; j < latestImage.height(); ++j )
-        {
-            if( latestImage.pixel( i, j ) == prevImage.pixel( i, j ) )
-            {
-                ++matchPix;
-            }
-        }
-    }
-
-    return float( 100.00 ) * matchPix / totalPix;
-}
-
-QByteArray DataSource::latestPixmapToByteArray()
-{
-    QByteArray inByteArray;
-    QBuffer inBuffer( & inByteArray );
-    inBuffer.open( QIODevice::WriteOnly );
-    m_newPixmap.save( & inBuffer, "PNG" ); // write inPixmap into inByteArray in PNG format
-    return inByteArray;
-}
-
-QString DataSource::getDateTime()
-{
-    QDateTime dateTime = QDateTime::currentDateTime();
-    return dateTime.toString( Qt::ISODate );
-}
-
-QByteArray DataSource::getHash( const QByteArray & imgData )
-{
-    return QCryptographicHash::hash( imgData, QCryptographicHash::Md5 ).toHex();
 }
