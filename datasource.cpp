@@ -7,7 +7,7 @@
 DataSource::DataSource( const QGuiApplication & app, QObject * parent )
     : QObject( parent ), m_app( app )
 {
-    m_dbManager.reset( new DbManager( "/tmp/test.db" ) ); //TODO adjust path
+    m_dbManager.reset( new DbManager( QDir::tempPath() + "test.db" ) );
 
     m_newPixmap.loadFromData( m_dbManager->getImageLatestRecord() );
 }
